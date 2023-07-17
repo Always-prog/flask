@@ -48,7 +48,6 @@ class Request(RequestBase):
     #: usually a :exc:`~werkzeug.exceptions.NotFound` exception or
     #: something similar.
     routing_exception: t.Optional[Exception] = None
-    max_form_parts = 20000
 
     @property
     def max_content_length(self) -> t.Optional[int]:  # type: ignore
@@ -58,6 +57,14 @@ class Request(RequestBase):
         else:
             return None
 
+    @property
+    def max_form_parts(self) -> t.Optional[int]:  # type: ignore
+        """Read-only view of the ``MAX_FORM_PARTS`` config key."""
+        if current_app:
+            return current_app.config["MAX_FORM_PARTS"]
+        else:
+            return 1000
+            
     @property
     def endpoint(self) -> t.Optional[str]:
         """The endpoint that matched the request URL.
